@@ -1,9 +1,9 @@
-# percobaan_fluuter
+# latihan01_28 Flutter
 
-A new Flutter project.
+## Deskripsi Proyek
+Proyek ini merupakan aplikasi Flutter sederhana yang dibuat sebagai latihan instalasi, konfigurasi, dan penggunaan Flutter. Aplikasi ini menggunakan template Counter App bawaan Flutter dan dijalankan menggunakan Google Chrome sebagai perangkat uji.
 
 ## Getting Started
-
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
