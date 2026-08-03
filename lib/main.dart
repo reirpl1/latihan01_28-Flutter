@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.pink),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
       ),
       home: const MyHomePage(title: 'Latihan Flutter'),
     );
@@ -56,6 +56,34 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+@override
+void initState() {
+  super.initState();
+
+  // Deklarasi variabel
+  String namaBarang = "Buku Tulis";
+  int hargaAnggota = 5000;
+  int hargaUmum = 7000;
+  int jumlahStok = 120;
+  bool tersedia = true;
+  int jumlahBeli = 3;
+
+  // Menghitung total harga
+  int totalAnggota = jumlahBeli * hargaAnggota;
+  int totalUmum = jumlahBeli * hargaUmum;
+
+  // Menghitung selisih
+  int selisih = totalUmum - totalAnggota;
+  print("===== KARTU DATA BARANG =====");
+  print("Nama Barang   : $namaBarang");
+  print("Harga Anggota : Rp$hargaAnggota");
+  print("Harga Umum    : Rp$hargaUmum");
+  print("Jumlah Stok   : $jumlahStok");
+  print("Tersedia      : $tersedia");
+  print("Total (anggota) 3 pcs : Rp$totalAnggota");
+  print("Selisih vs Umum : Rp$selisih");
+  print("=============================");
+}
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -102,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('You have pushed the button this many times:'),
             Text(
@@ -120,3 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+//Pemilihan tipe data yang tepat penting agar data pada kasir koperasi akurat dan mudah diolah.
+//Misalnya harga dan stok menggunakan int, nama barang menggunakan string dan status tersedia menggunakan bool.
+//Dengan tipe data yang sesuai, kesalahan perhitungan dan penyimpanan data dapat diminimalkan.
