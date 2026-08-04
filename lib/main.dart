@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,26 +65,87 @@ void initState() {
   String namaBarang = "Buku Tulis";
   int hargaAnggota = 5000;
   int hargaUmum = 7000;
-  int jumlahStok = 120;
-  bool tersedia = true;
-  int jumlahBeli = 3;
+  int jumlahStok = 0;
+  int jumlahBeli = 30;
+  bool anggota = true;
+  String kategori = "atk";
 
-  // Menghitung total harga
-  int totalAnggota = jumlahBeli * hargaAnggota;
-  int totalUmum = jumlahBeli * hargaUmum;
+  bool tersedia = jumlahStok > 0;
+  String rak;
 
-  // Menghitung selisih
-  int selisih = totalUmum - totalAnggota;
+  switch (kategori) {
+    case "atk":
+      rak = "Rak 1";
+      break;
+    case "makanan":
+      rak = "Rak 2";
+      break;
+    case "minuman":
+      rak = "Rak 3";
+      break;
+    default:
+      rak = "Rak lain";
+  }
+
+  // Switch-case lebih rapi digunakan ketika ada banyak pilihan nilai yang tetap,
+  // misal seperti kategori barang. Kode menjadi lebih mudah dibaca dan dikelola
+  // dibandingkan menggunakan banyak if-else secara berurutan.
+
+  // Menentukan harga sesuai status pembeli
+  int harga;
+
+  if (anggota) {
+    harga = hargaAnggota;
+  } else {
+    harga = hargaUmum;
+  }
+
+  // Menghitung total
+  int total = harga * jumlahBeli;
+
+  // Menghitung potongan
+  double potongan = 0;
+
+  if (total > 200000) {
+    potongan = total * 0.10;
+  } else if (total > 100000) {
+    potongan = total * 0.05;
+  } else {
+    potongan = 0;
+  }
+
+  double hargaAkhir = total - potongan;
+
+  final rupiah = NumberFormat.currency(
+  locale: 'id_ID',
+  symbol: 'Rp',
+  decimalDigits: 0,
+);
+
+  // Menampilkan hasil
   print("===== KARTU DATA BARANG =====");
   print("Nama Barang   : $namaBarang");
-  print("Harga Anggota : Rp$hargaAnggota");
-  print("Harga Umum    : Rp$hargaUmum");
+  print("Harga Anggota : ${rupiah.format(hargaAnggota)}");
+  print("Harga Umum    : ${rupiah.format(hargaUmum)}");
   print("Jumlah Stok   : $jumlahStok");
-  print("Tersedia      : $tersedia");
-  print("Total (anggota) 3 pcs : Rp$totalAnggota");
-  print("Selisih vs Umum : Rp$selisih");
+  print("Kategori      : $kategori");
+  print("Letak Rak     : $rak");
+
+  if (tersedia) {
+    print("Status Barang : Tersedia");
+  } else {
+    print("Status Barang : Tidak Tersedia");
+  }
+
+  print("Status Pembeli : ${anggota ? "Anggota" : "Umum"}");
+  print("Harga Satuan   : ${rupiah.format(harga)}");
+  print("Jumlah Beli    : $jumlahBeli");
+  print("Total Harga    : ${rupiah.format(total)}");
+  print("Potongan       : ${rupiah.format(potongan)}");
+  print("Harga Akhir    : ${rupiah.format(hargaAkhir)}");
   print("=============================");
 }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -152,3 +214,4 @@ void initState() {
 //Pemilihan tipe data yang tepat penting agar data pada kasir koperasi akurat dan mudah diolah.
 //Misalnya harga dan stok menggunakan int, nama barang menggunakan string dan status tersedia menggunakan bool.
 //Dengan tipe data yang sesuai, kesalahan perhitungan dan penyimpanan data dapat diminimalkan.
+
