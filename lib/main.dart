@@ -65,8 +65,8 @@ void initState() {
   String namaBarang = "Buku Tulis";
   int hargaAnggota = 5000;
   int hargaUmum = 7000;
-  int jumlahStok = 0;
-  int jumlahBeli = 30;
+  int jumlahStok = 90;
+  int jumlahBeli = 170;
   bool anggota = true;
   String kategori = "atk";
 
@@ -91,7 +91,6 @@ void initState() {
   // misal seperti kategori barang. Kode menjadi lebih mudah dibaca dan dikelola
   // dibandingkan menggunakan banyak if-else secara berurutan.
 
-  // Menentukan harga sesuai status pembeli
   int harga;
 
   if (anggota) {
@@ -105,17 +104,25 @@ void initState() {
 
   // Menghitung potongan
   double potongan = 0;
+  double hargaAkhir = 0;
 
-  if (total > 200000) {
+  if (total < 0) {
+    print("Error: Total belanja tidak boleh bernilai negatif!");
+    return;
+  }
+
+  if (anggota && total > 500000) {
+    potongan = total * 0.15;
+  } else if (total > 200000) {
     potongan = total * 0.10;
   } else if (total > 100000) {
     potongan = total * 0.05;
   } else {
     potongan = 0;
   }
-
-  double hargaAkhir = total - potongan;
-
+ 
+  hargaAkhir = total - potongan;
+  
   final rupiah = NumberFormat.currency(
   locale: 'id_ID',
   symbol: 'Rp',
@@ -144,7 +151,50 @@ void initState() {
   print("Potongan       : ${rupiah.format(potongan)}");
   print("Harga Akhir    : ${rupiah.format(hargaAkhir)}");
   print("=============================");
+
+
+// ==============================
+// DAFTAR BARANG
+// ==============================
+
+List<String> daftarBarang = [
+  "Buku Tulis",
+  "Pulpen",
+  "Penghapus",
+  "Roti",
+];
+
+List<int> daftarHarga = [
+  3000,
+  2500,
+  1500,
+  5000,
+];
+
+print("");
+print("===== DAFTAR BARANG =====");
+
+for (int i = 0; i < daftarBarang.length; i++) {
+  print("${i + 1}. ${daftarBarang[i]} - ${rupiah.format(daftarHarga[i])}");
 }
+
+print("");
+print("---- PENJUALAN BUKU TULIS ----");
+
+int stokBuku = 3;
+
+// Jika kondisi while  salah, program dapat terus melakukan penjualan
+// hingga stok menjadi negatif atau terjadi perulangan tanpa henti
+// dengan menggunakan kondisi while (stokBuku > 0), penjualan hanya dilakukan
+// selama stok masih tersedia dan akan berhenti tepat saat stok habis
+
+while (stokBuku > 0) {
+  stokBuku--;
+  print("Terjual 1, sisa stok: $stokBuku");
+}
+}
+
+
 
   void _incrementCounter() {
     setState(() {
