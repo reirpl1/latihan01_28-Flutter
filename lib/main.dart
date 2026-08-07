@@ -5,6 +5,14 @@ void main() {
   runApp(const MyApp());
 }
 
+double hitungTotal(int jumlah, double harga) {
+  return jumlah * harga;
+}
+
+double hitungHargaAkhir(double total, double persenPotongan) {
+  return total - (total * persenPotongan / 100);
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -100,10 +108,10 @@ void initState() {
   }
 
   // Menghitung total
-  int total = harga * jumlahBeli;
+  double  total = hitungTotal(jumlahBeli, harga.toDouble());
 
   // Menghitung potongan
-  double potongan = 0;
+  double persenPotongan = 0;
   double hargaAkhir = 0;
 
   if (total < 0) {
@@ -112,16 +120,16 @@ void initState() {
   }
 
   if (anggota && total > 500000) {
-    potongan = total * 0.15;
+    persenPotongan = 15;
   } else if (total > 200000) {
-    potongan = total * 0.10;
+    persenPotongan = 10;
   } else if (total > 100000) {
-    potongan = total * 0.05;
-  } else {
-    potongan = 0;
+    persenPotongan = 5;
   }
  
-  hargaAkhir = total - potongan;
+  double potongan = total * persenPotongan / 100;
+
+  hargaAkhir = hitungHargaAkhir(total, persenPotongan);
   
   final rupiah = NumberFormat.currency(
   locale: 'id_ID',
@@ -148,7 +156,7 @@ void initState() {
   print("Harga Satuan   : ${rupiah.format(harga)}");
   print("Jumlah Beli    : $jumlahBeli");
   print("Total Harga    : ${rupiah.format(total)}");
-  print("Potongan       : ${rupiah.format(potongan)}");
+  print("Potongan       : ${rupiah.format(potongan)} ($persenPotongan%)");
   print("Harga Akhir    : ${rupiah.format(hargaAkhir)}");
   print("=============================");
 
@@ -171,6 +179,32 @@ List<int> daftarHarga = [
   5000,
 ];
 
+List<int> daftarStok = [
+  3,
+  50,
+  2,
+  20,
+];
+
+int totalNilaiStok = 0;
+
+for (int i = 0; i <daftarBarang.length; i++) {
+  totalNilaiStok += daftarHarga[i] * daftarStok[i];
+}
+
+print("");
+print("==== TOTAL NILAI STOK ====");
+print("Total Nilai Stok : ${rupiah.format(totalNilaiStok)}");
+
+print("");
+print("==== BARANG DENGAN STOK MENIPIS ====");
+
+for (int i = 0; i < daftarBarang.length; i++) {
+  if (daftarStok[i] < 5) {
+    print("${daftarBarang[i]} - Stok: ${daftarStok[i]}");
+  }
+}
+
 print("");
 print("===== DAFTAR BARANG =====");
 
@@ -192,9 +226,8 @@ while (stokBuku > 0) {
   stokBuku--;
   print("Terjual 1, sisa stok: $stokBuku");
 }
+
 }
-
-
 
   void _incrementCounter() {
     setState(() {
@@ -265,3 +298,8 @@ while (stokBuku > 0) {
 //Misalnya harga dan stok menggunakan int, nama barang menggunakan string dan status tersedia menggunakan bool.
 //Dengan tipe data yang sesuai, kesalahan perhitungan dan penyimpanan data dapat diminimalkan.
 
+// Memecah program menjadi fungsi membuat kode lebih mudah dipelihara dan digunakan kembali
+// Jika aturan potongan koperasi berubah, cukup mengubah perhitungan pada fungsi
+// hitungHargaAkhir() tanpa perlu mengubah kode dibagian transaksi lainnya. 
+// Dengan demikian, perubahan cukup  dilakukan satu kali sehingga lebih efisien 
+// dan mengurangi risiko kesalahan.
