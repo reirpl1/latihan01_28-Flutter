@@ -117,9 +117,23 @@ void initState() {
   Barang pulpen = Barang("Pulpen", 2500, 50);
   Barang roti = Barang("Roti", 4000, 20);
 
-  bukuTulis.tampilkan();
-  pulpen.tampilkan();
-  roti.tampilkan();
+  List<Barang> daftarBarangObjek
+ = [
+    bukuTulis,
+    pulpen,
+    roti,
+  ];
+  
+  for  (Barang barang in daftarBarangObjek) {
+    barang.tampilkan();
+  }
+  
+//  Dibandingkan cara sprint 3 yang menggunakan beberapa List terpisah
+//  untuk  nama, harga, stok,  penggunaan objek Barang membuat
+//  data setiap  barang menjadi satu kesatuan.
+//  Dengan List<Barang> dan perulangan, penambahan barang menjadi
+//  lebih mudah  karena cukup membuat objek Barang baru tanpa
+//  harus menambah data pada beberapa List yang berbeda.
 
   bool tersedia = jumlahStok > 0;
   String rak;
