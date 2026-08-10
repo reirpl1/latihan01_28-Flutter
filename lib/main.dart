@@ -51,7 +51,12 @@ class Barang {
   double nilaiStok() {
     return harga.toDouble() * stok.toDouble();
   }
+
+  bool bisaDijual(int diminta) {
+    return stok >= diminta;
+  }
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -290,6 +295,17 @@ print("===== DAFTAR BARANG =====");
 for (int i = 0; i < daftarBarang.length; i++) {
   print("${i + 1}. ${daftarBarang[i]} - ${rupiah.format(daftarHarga[i])}");
 }
+
+int diminta = 50;
+print("");
+print("==== CEK KECUKUPAN STOK ====");
+
+if (bukuTulis.bisaDijual(diminta)) {
+  print("Buku Tulis bisa dijual sebanyak $diminta");
+} else {
+  print("Stok Buku Tulis tidak mencukupi untuk penjualan sebanyak $diminta");
+}
+
 
 print("");
 print("---- PENJUALAN BUKU TULIS ----");
