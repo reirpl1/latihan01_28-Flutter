@@ -45,7 +45,11 @@ class Barang {
     } else {
       print("Status      : Tidak Tersedia");
     }
-    print("=============================");
+      print("=============================");
+  }
+
+  double nilaiStok() {
+    return harga.toDouble() * stok.toDouble();
   }
 }
 
@@ -118,15 +122,14 @@ void initState() {
   Barang pulpen = Barang("Pulpen", 2500, 50);
   Barang roti = Barang("Roti", 4000, 20);
 
-  List<Barang> daftarBarangObjek
- = [
+  List<Barang> daftarBarangObjek = [
     bukuTulis,
     pulpen,
     roti,
   ];
   
-  for  (Barang barang in daftarBarangObjek) {
-    barang.tampilkan();
+  for (Barang barang in daftarBarangObjek) {
+  barang.tampilkan();
   }
 
 //  Dibandingkan cara sprint 3 yang menggunakan beberapa List terpisah
@@ -204,6 +207,15 @@ void initState() {
   decimalDigits: 0,
 );
 
+print("");
+print("==== NILAI STOK BARANG ====");
+
+for (Barang barang in daftarBarangObjek) {
+  print(
+    "${barang.nama} : ${rupiah.format(barang.nilaiStok())}"
+  );
+}
+
   // Menampilkan hasil
   print("===== KARTU DATA BARANG =====");
   print("Nama Barang   : $namaBarang");
@@ -253,10 +265,10 @@ List<int> daftarStok = [
   20,
 ];
 
-int totalNilaiStok = 0;
+double totalNilaiStok = 0;
 
-for (int i = 0; i <daftarBarang.length; i++) {
-  totalNilaiStok += daftarHarga[i] * daftarStok[i];
+for (Barang barang in daftarBarangObjek) {
+  totalNilaiStok += barang.nilaiStok();
 }
 
 print("");
