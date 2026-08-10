@@ -13,6 +13,41 @@ double hitungHargaAkhir(double total, double persenPotongan) {
   return total - (total * persenPotongan / 100);
 }
 
+double bayarAkhir(int jumlah, double harga, double persenPotongan) {
+  double total = hitungTotal(jumlah, harga);
+  return hitungHargaAkhir(total, persenPotongan);
+}
+
+double hitungHarga(bool anggota, double hAnggota, double hUmum ) {
+  if (anggota) {
+    return hAnggota;
+  } else {
+    return hUmum;
+  }
+}
+
+class Barang {
+  String nama;
+  int harga;
+  int stok;
+
+  Barang(this.nama, this.harga, this.stok);
+
+  void tampilkan() {
+    print("==== KARTU DATA BARANG ====");
+    print("Nama Barang : $nama");
+    print("Harga       : Rp$harga");
+    print("Jumlah Stok : $stok");
+
+    if (stok > 0) {
+      print("Status      : Tersedia");
+    } else {
+      print("Status      : Tidak Tersedia");
+    }
+    print("=============================");
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -78,6 +113,14 @@ void initState() {
   bool anggota = true;
   String kategori = "atk";
 
+  Barang bukuTulis = Barang("Buku Tulis", 5000, 90);
+  Barang pulpen = Barang("Pulpen", 2500, 50);
+  Barang roti = Barang("Roti", 4000, 20);
+
+  bukuTulis.tampilkan();
+  pulpen.tampilkan();
+  roti.tampilkan();
+
   bool tersedia = jumlahStok > 0;
   String rak;
 
@@ -99,16 +142,14 @@ void initState() {
   // misal seperti kategori barang. Kode menjadi lebih mudah dibaca dan dikelola
   // dibandingkan menggunakan banyak if-else secara berurutan.
 
-  int harga;
-
-  if (anggota) {
-    harga = hargaAnggota;
-  } else {
-    harga = hargaUmum;
-  }
+  double harga = hitungHarga(
+    anggota,
+    hargaAnggota.toDouble(),
+    hargaUmum.toDouble(),
+  );
 
   // Menghitung total
-  double  total = hitungTotal(jumlahBeli, harga.toDouble());
+  double total = hitungTotal(jumlahBeli, harga);
 
   // Menghitung potongan
   double persenPotongan = 0;
@@ -128,6 +169,12 @@ void initState() {
   }
  
   double potongan = total * persenPotongan / 100;
+
+  hargaAkhir = bayarAkhir(
+    jumlahBeli,
+    harga,
+    persenPotongan,
+  );
 
   hargaAkhir = hitungHargaAkhir(total, persenPotongan);
   
@@ -294,6 +341,7 @@ while (stokBuku > 0) {
   }
 }
 
+
 //Pemilihan tipe data yang tepat penting agar data pada kasir koperasi akurat dan mudah diolah.
 //Misalnya harga dan stok menggunakan int, nama barang menggunakan string dan status tersedia menggunakan bool.
 //Dengan tipe data yang sesuai, kesalahan perhitungan dan penyimpanan data dapat diminimalkan.
@@ -303,3 +351,15 @@ while (stokBuku > 0) {
 // hitungHargaAkhir() tanpa perlu mengubah kode dibagian transaksi lainnya. 
 // Dengan demikian, perubahan cukup  dilakukan satu kali sehingga lebih efisien 
 // dan mengurangi risiko kesalahan.
+
+// Memindahkan logika pemilihan harga ke fungsi hitungHargga()
+// mengurangi risiko kesalahan karena keputusan hanya dibuat
+// di satu tempat, jika aturan harga anggota atau umum berubah,
+// cukup mengubah fungsi hitungHarga() tanpa mengubah seluruh
+// bagian proram yang menggunakan harga tersebut
+
+// Fungsi bayarAkhir menyusun beberapa fungsi menjadi satu proses
+// Fungsi ini memanggil hitungTotal() lalu hitungHargaAkhir() sehingga
+// kode mnejadi lebih rapi, mudah digunakan kembali, dan perubahan
+// cukup dilakukan pada fungsi terkait tanpa mengubah banyak bagian program
+
