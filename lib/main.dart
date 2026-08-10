@@ -57,6 +57,13 @@ class Barang {
   }
 }
 
+class Pembeli {
+    String nama;
+    bool statusAnggota;
+
+    Pembeli(this.nama, this.statusAnggota);
+  }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -126,6 +133,8 @@ void initState() {
   Barang bukuTulis = Barang("Buku Tulis", 5000, 90);
   Barang pulpen = Barang("Pulpen", 2500, 50);
   Barang roti = Barang("Roti", 4000, 20);
+
+  Pembeli pembeli = Pembeli("Andi", true);
 
   List<Barang> daftarBarangObjek = [
     bukuTulis,
@@ -322,6 +331,12 @@ while (stokBuku > 0) {
   print("Terjual 1, sisa stok: $stokBuku");
 }
 
+print("");
+print("==== DATA PEMBELI ====");
+print("Nama Pembeli : ${pembeli.nama}");
+print(
+  "Status      : ${pembeli.statusAnggota  ? "Anggota" : "Umum"}"
+);
 }
 
   void _incrementCounter() {
