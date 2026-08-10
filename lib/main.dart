@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 void main() {
@@ -127,13 +128,18 @@ void initState() {
   for  (Barang barang in daftarBarangObjek) {
     barang.tampilkan();
   }
-  
+
 //  Dibandingkan cara sprint 3 yang menggunakan beberapa List terpisah
 //  untuk  nama, harga, stok,  penggunaan objek Barang membuat
 //  data setiap  barang menjadi satu kesatuan.
 //  Dengan List<Barang> dan perulangan, penambahan barang menjadi
 //  lebih mudah  karena cukup membuat objek Barang baru tanpa
 //  harus menambah data pada beberapa List yang berbeda.
+
+// Memodelkan barang sebagai objek membuatt data nama, harga, dan stok
+// menjadi satu kesatuan sehingga kode lebih rapi. 
+// Sistem koperasi lebih mudah dikembangkan karena atribut atau Method
+// baru dapat ditambahkan ke class Barang tanpa mengubah banyak kode
 
   bool tersedia = jumlahStok > 0;
   String rak;
