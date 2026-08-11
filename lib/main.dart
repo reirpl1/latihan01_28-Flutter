@@ -30,9 +30,21 @@ double hitungHarga(bool anggota, double hAnggota, double hUmum ) {
 class Barang {
   String nama;
   int harga;
-  int stok;
+  int _stok;
 
-  Barang(this.nama, this.harga, this.stok);
+  Barang(this.nama, this.harga, this._stok);
+
+  int get stok => _stok;
+
+  bool jual(int n) {
+    if (_stok >= n) {
+      _stok -= n;
+      return true;
+    } else {
+      return false;
+    
+    }
+  }
 
   void tampilkan() {
     print("==== KARTU DATA BARANG ====");
@@ -54,6 +66,21 @@ class Barang {
 
   bool bisaDijual(int diminta) {
     return stok >= diminta;
+  }
+}
+
+class BarangPromo extends Barang {
+  double diskon;
+
+  BarangPromo(
+    String nama,
+    int harga,
+    int stok,
+    this.diskon,
+  ) : super(nama, harga, stok);
+
+  double hargaPromo() {
+    return harga - (harga * diskon / 100);
   }
 }
 
@@ -135,6 +162,13 @@ void initState() {
   Barang roti = Barang("Roti", 4000, 20);
 
   Pembeli pembeli = Pembeli("Andi", true);
+
+  BarangPromo bukuPromo = BarangPromo(
+    "Buku Tulis Promo",
+    5000,
+    10,
+    20,
+  );
 
   List<Barang> daftarBarangObjek = [
     bukuTulis,
@@ -299,6 +333,13 @@ for (int i = 0; i < daftarBarang.length; i++) {
 }
 
 print("");
+print("==== BARANG PROMO ====");
+print("Nama Barang : ${bukuPromo.nama}");
+print("Harga Normal: Rp${bukuPromo.harga}");
+print("Diskon      : ${bukuPromo.diskon}%");
+print("Harga Promo : Rp${bukuPromo.hargaPromo()}");
+
+print("");
 print("===== DAFTAR BARANG =====");
 
 for (int i = 0; i < daftarBarang.length; i++) {
@@ -315,6 +356,26 @@ if (bukuTulis.bisaDijual(diminta)) {
   print("Stok Buku Tulis tidak mencukupi untuk penjualan sebanyak $diminta");
 }
 
+print("");
+print("==== UJI ENKAPSULASI STOK ====");
+print("Stok awal Buku Tulis : ${bukuTulis.stok}");
+
+if (bukuTulis.jual(20)) {
+  print("Penjualan 20 berhasil");
+} else {
+  print("Penjualan 20 gagal");
+}
+
+
+print("Stok setelah penjualan : ${bukuTulis.stok}");
+
+if (bukuTulis.jual(100)) {
+  print("Penjualan 100 berhasil");
+} else {
+  print("Penjualan 100 gagal karena stok tidak mencukupi");
+}
+
+print("Stok akhir : ${bukuTulis.stok}");
 
 print("");
 print("---- PENJUALAN BUKU TULIS ----");
@@ -338,6 +399,8 @@ print(
   "Status      : ${pembeli.statusAnggota  ? "Anggota" : "Umum"}"
 );
 }
+
+
 
   void _incrementCounter() {
     setState(() {
@@ -426,3 +489,7 @@ print(
 // kode mnejadi lebih rapi, mudah digunakan kembali, dan perubahan
 // cukup dilakukan pada fungsi terkait tanpa mengubah banyak bagian program
 
+// karena _stok harus terlindungi agar tidak dapat diubah sembarangan.
+// Perubahan stok hanya boleh dilakukan melalui method jual() yang 
+// mengecek ketersediaan stok terlebih dahulu, sehingga data stok tetap
+// akurat, konsisten, dan sesuai dengan transaksi yang terjadi.
