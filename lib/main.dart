@@ -3,6 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 void main() {
+  Barang buku = Barang("Buku Tulis", 5000, 90);
+
+  buku._stok = 999; 
+
+  print("Stok setelah diubah langsung: ${buku.stok}");
+
   runApp(const MyApp());
 }
 
@@ -82,6 +88,34 @@ class BarangPromo extends Barang {
   double hargaPromo() {
     return harga - (harga * diskon / 100);
   }
+
+  @override
+  void tampilkan() {
+    print("===== BARANG PROMO ====");
+    print("Nama Barang : $nama");
+    print("Harga Coret : Rp$harga");
+    print("Diskon      : $diskon%");
+    print("Harga Promo : Rp${hargaPromo()}");
+    print("Jumlah Stok : $stok");
+    print("=======================");
+  }
+}
+
+class BarangGrosir extends Barang {
+  int minimalBeli;
+  double diskonGrosir;
+
+  BarangGrosir(
+    String nama,
+    int harga,
+    int stok,
+    this.minimalBeli,
+    this.diskonGrosir,
+  ) : super(nama, harga, stok);
+
+  double hargaGrosir() {
+    return harga - (harga * diskonGrosir / 100);
+  }
 }
 
 class Pembeli {
@@ -90,7 +124,6 @@ class Pembeli {
 
     Pembeli(this.nama, this.statusAnggota);
   }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -158,6 +191,32 @@ void initState() {
   String kategori = "atk";
 
   Barang bukuTulis = Barang("Buku Tulis", 5000, 90);
+
+ void prosesBeli(String inputJumlah) {
+  try {
+    int jumlah = int.parse(inputJumlah);
+
+    if (bukuTulis.jual(jumlah)) {
+      print("Penjualan $jumlah Buku Tulis berhasil.");
+      print("Sisa stok : ${bukuTulis.stok}");
+    } else {
+      print("Penjualan gagal karena stok tidak mencukupi");
+    }
+  } catch (e) {
+    print("input jumlah tidak valid. Silahkan masukkan angka");
+  } finally {
+    print("Transaksi dicatat di log");
+  }
+}
+
+prosesBeli("2");
+prosesBeli("dua");
+
+// Penanganan galat meningkatkan kepercayaan pengurus karena sistem
+// tetap berjalan ketika terjadi kesalahan input. Pengurus mendapatkan pesan
+// yang jelas sehingga dapat memperbaiki input tanpa membuat program berhenti 
+// atau mengalami crash.
+
   Barang pulpen = Barang("Pulpen", 2500, 50);
   Barang roti = Barang("Roti", 4000, 20);
 
@@ -168,6 +227,16 @@ void initState() {
     5000,
     10,
     20,
+  );
+
+  bukuPromo.tampilkan();
+
+  BarangGrosir pulpenGrosir = BarangGrosir(
+    "Pulpen Grosir",
+    2500,
+    50,
+    10,
+    10,
   );
 
   List<Barang> daftarBarangObjek = [
@@ -335,9 +404,18 @@ for (int i = 0; i < daftarBarang.length; i++) {
 print("");
 print("==== BARANG PROMO ====");
 print("Nama Barang : ${bukuPromo.nama}");
-print("Harga Normal: Rp${bukuPromo.harga}");
+print("Harga Coret: Rp${bukuPromo.harga}");
 print("Diskon      : ${bukuPromo.diskon}%");
 print("Harga Promo : Rp${bukuPromo.hargaPromo()}");
+
+print("");
+print("==== BARANG GROSIR ====");
+print("Nama Barang  : ${pulpenGrosir.nama}");
+print("Harga Normal : Rp${pulpenGrosir.harga}");
+print("Minimal Beli : ${pulpenGrosir.minimalBeli}");
+print("Diskon Grosir : ${pulpenGrosir.diskonGrosir}%");
+print("Harga Grosir : Rp${pulpenGrosir.hargaGrosir()}");
+
 
 print("");
 print("===== DAFTAR BARANG =====");
