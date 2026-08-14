@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-void main() {
-  Barang buku = Barang("Buku Tulis", 5000, 90);
+Future<void> muatLaporan() async {
+  print("Menyiapkan laporan...");
+  await Future.delayed(Duration(seconds: 1));
+  print("Laporan siap!");
+}
 
-  buku._stok = 999; 
+Future<void> main() async {
+  await muatLaporan();
 
-  print("Stok setelah diubah langsung: ${buku.stok}");
+  jalankanSistem();
 
   runApp(const MyApp());
 }
@@ -25,7 +29,7 @@ double bayarAkhir(int jumlah, double harga, double persenPotongan) {
   return hitungHargaAkhir(total, persenPotongan);
 }
 
-double hitungHarga(bool anggota, double hAnggota, double hUmum ) {
+double hitungHarga(bool anggota, double hAnggota, double hUmum) {
   if (anggota) {
     return hAnggota;
   } else {
@@ -48,7 +52,6 @@ class Barang {
       return true;
     } else {
       return false;
-    
     }
   }
 
@@ -63,7 +66,7 @@ class Barang {
     } else {
       print("Status      : Tidak Tersedia");
     }
-      print("=============================");
+    print("=============================");
   }
 
   double nilaiStok() {
@@ -119,11 +122,306 @@ class BarangGrosir extends Barang {
 }
 
 class Pembeli {
-    String nama;
-    bool statusAnggota;
+  String nama;
+  bool statusAnggota;
 
-    Pembeli(this.nama, this.statusAnggota);
+  Pembeli(this.nama, this.statusAnggota);
+}
+
+void jalankanSistem() {
+
+  // Deklarasi variabel
+  String namaBarang = "Buku Tulis";
+  int hargaAnggota = 5000;
+  int hargaUmum = 7000;
+  int jumlahStok = 90;
+  int jumlahBeli = 80;
+  bool anggota = true;
+  String kategori = "atk";
+
+  Barang bukuTulis = Barang("Buku Tulis", 5000, 90);
+  Barang pulpen = Barang("Pulpen", 2500, 50);
+  Barang roti = Barang("Roti", 4000, 20);
+
+  Pembeli pembeli = Pembeli("Andi", true);
+
+  BarangPromo bukuPromo = BarangPromo(
+    "Buku Tulis Promo",
+    5000,
+    10,
+    20,
+  );
+
+  BarangGrosir pulpenGrosir = BarangGrosir(
+    "Pulpen Grosir",
+    2500,
+    50,
+    10,
+    10,
+  );
+
+  List<Barang> daftarBarangObjek = [
+    bukuTulis,
+    pulpen,
+    roti,
+  ];
+
+  // ==============================
+  // DAFTAR BARANG
+  // ==============================
+
+  List<String> daftarBarang = [
+    "Buku Tulis",
+    "Pulpen",
+    "Penghapus",
+    "Roti",
+  ];
+
+  List<int> daftarHarga = [
+    3000,
+    2500,
+    1500,
+    5000,
+  ];
+
+  List<int> daftarStok = [
+    3,
+    50,
+    2,
+    20,
+  ];
+
+  final rupiah = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp',
+    decimalDigits: 0,
+  );
+
+  bool tersedia = jumlahStok > 0;
+  String rak;
+
+  switch (kategori) {
+    case "atk":
+      rak = "Rak 1";
+      break;
+    case "makanan":
+      rak = "Rak 2";
+      break;
+    case "minuman":
+      rak = "Rak 3";
+      break;
+    default:
+      rak = "Rak lain";
   }
+
+  // Switch-case lebih rapi digunakan ketika ada banyak pilihan nilai yang tetap,
+  // misal seperti kategori barang. Kode menjadi lebih mudah dibaca dan dikelola
+  // dibandingkan menggunakan banyak if-else secara berurutan.
+
+  // ---------------- TAMPILKAN BARANG ----------------
+
+  for (Barang barang in daftarBarangObjek) {
+    barang.tampilkan();
+  }
+
+  //  Dibandingkan cara sprint 3 yang menggunakan beberapa List terpisah
+  //  untuk  nama, harga, stok,  penggunaan objek Barang membuat
+  //  data setiap  barang menjadi satu kesatuan.
+  //  Dengan List<Barang> dan perulangan, penambahan barang menjadi
+  //  lebih mudah  karena cukup membuat objek Barang baru tanpa
+  //  harus menambah data pada beberapa List yang berbeda.
+
+  // Memodelkan barang sebagai objek membuatt data nama, harga, dan stok
+  // menjadi satu kesatuan sehingga kode lebih rapi.
+  // Sistem koperasi lebih mudah dikembangkan karena atribut atau Method
+  // baru dapat ditambahkan ke class Barang tanpa mengubah banyak kode
+
+  bukuPromo.tampilkan();
+
+  print("");
+  print("==== NILAI STOK BARANG ====");
+
+  for (Barang barang in daftarBarangObjek) {
+    print("${barang.nama} : ${rupiah.format(barang.nilaiStok())}");
+  }
+
+  // Menampilkan hasil
+  print("===== KARTU DATA BARANG =====");
+  print("Nama Barang   : $namaBarang");
+  print("Harga Anggota : ${rupiah.format(hargaAnggota)}");
+  print("Harga Umum    : ${rupiah.format(hargaUmum)}");
+  print("Jumlah Stok   : $jumlahStok");
+  print("Kategori      : $kategori");
+  print("Letak Rak     : $rak");
+
+  if (tersedia) {
+    print("Status Barang : Tersedia");
+  } else {
+    print("Status Barang : Tidak Tersedia");
+  }
+
+  double totalNilaiStok = 0;
+
+  for (Barang barang in daftarBarangObjek) {
+    totalNilaiStok += barang.nilaiStok();
+  }
+
+  print("");
+  print("==== TOTAL NILAI STOK ====");
+  print("Total Nilai Stok : ${rupiah.format(totalNilaiStok)}");
+
+  print("");
+  print("==== BARANG DENGAN STOK MENIPIS ====");
+
+  for (int i = 0; i < daftarBarang.length; i++) {
+    if (daftarStok[i] < 5) {
+      print("${daftarBarang[i]} - Stok: ${daftarStok[i]}");
+    }
+  }
+
+  print("");
+  print("==== BARANG PROMO ====");
+  print("Nama Barang : ${bukuPromo.nama}");
+  print("Harga Coret: Rp${bukuPromo.harga}");
+  print("Diskon      : ${bukuPromo.diskon}%");
+  print("Harga Promo : Rp${bukuPromo.hargaPromo()}");
+
+  print("");
+  print("==== BARANG GROSIR ====");
+  print("Nama Barang  : ${pulpenGrosir.nama}");
+  print("Harga Normal : Rp${pulpenGrosir.harga}");
+  print("Minimal Beli : ${pulpenGrosir.minimalBeli}");
+  print("Diskon Grosir : ${pulpenGrosir.diskonGrosir}%");
+  print("Harga Grosir : Rp${pulpenGrosir.hargaGrosir()}");
+
+  print("");
+  print("===== DAFTAR BARANG =====");
+
+  for (int i = 0; i < daftarBarang.length; i++) {
+    print("${i + 1}. ${daftarBarang[i]} - ${rupiah.format(daftarHarga[i])}");
+  }
+
+  // ---------------- PROSES TRANSAKSI ----------------
+
+  void prosesBeli(String inputJumlah) {
+    try {
+      int jumlah = int.parse(inputJumlah);
+
+      if (bukuTulis.jual(jumlah)) {
+        print("Penjualan $jumlah Buku Tulis berhasil.");
+        print("Sisa stok : ${bukuTulis.stok}");
+      } else {
+        print("Penjualan gagal karena stok tidak mencukupi");
+      }
+    } catch (e) {
+      print("\"$inputJumlah\" bukan angka, ulangi.");
+    } finally {
+      print("Transaksi dicatat di log");
+    }
+  }
+
+  prosesBeli("2");
+  prosesBeli("dua");
+
+  // Penanganan galat meningkatkan kepercayaan pengurus karena sistem
+  // tetap berjalan ketika terjadi kesalahan input. Pengurus mendapatkan pesan
+  // yang jelas sehingga dapat memperbaiki input tanpa membuat program berhenti
+  // atau mengalami crash.
+
+  double harga = hitungHarga(
+    anggota,
+    hargaAnggota.toDouble(),
+    hargaUmum.toDouble(),
+  );
+
+  // Menghitung total
+  double total = hitungTotal(jumlahBeli, harga);
+
+  // Menghitung potongan
+  double persenPotongan = 0;
+  double hargaAkhir = 0;
+
+  if (total < 0) {
+    print("Error: Total belanja tidak boleh bernilai negatif!");
+    return;
+  }
+
+  if (anggota && total > 500000) {
+    persenPotongan = 15;
+  } else if (total > 200000) {
+    persenPotongan = 10;
+  } else if (total > 100000) {
+    persenPotongan = 5;
+  }
+
+  double potongan = total * persenPotongan / 100;
+
+  hargaAkhir = bayarAkhir(
+    jumlahBeli,
+    harga,
+    persenPotongan,
+  );
+
+  hargaAkhir = hitungHargaAkhir(total, persenPotongan);
+
+  print("Status Pembeli : ${anggota ? "Anggota" : "Umum"}");
+  print("Harga Satuan   : ${rupiah.format(harga)}");
+  print("Jumlah Beli    : $jumlahBeli");
+  print("Total Harga    : ${rupiah.format(total)}");
+  print("Potongan       : ${rupiah.format(potongan)} ($persenPotongan%)");
+  print("Harga Akhir    : ${rupiah.format(hargaAkhir)}");
+  print("=============================");
+
+  int diminta = 50;
+  print("");
+  print("==== CEK KECUKUPAN STOK ====");
+
+  if (bukuTulis.bisaDijual(diminta)) {
+    print("Buku Tulis bisa dijual sebanyak $diminta");
+  } else {
+    print("Stok Buku Tulis tidak mencukupi untuk penjualan sebanyak $diminta");
+  }
+
+  print("");
+  print("==== UJI ENKAPSULASI STOK ====");
+  print("Stok awal Buku Tulis : ${bukuTulis.stok}");
+
+  if (bukuTulis.jual(20)) {
+    print("Penjualan 20 berhasil");
+  } else {
+    print("Penjualan 20 gagal");
+  }
+
+  print("Stok setelah penjualan : ${bukuTulis.stok}");
+
+  if (bukuTulis.jual(100)) {
+    print("Penjualan 100 berhasil");
+  } else {
+    print("Penjualan 100 gagal karena stok tidak mencukupi");
+  }
+
+  print("Stok akhir : ${bukuTulis.stok}");
+
+  print("");
+  print("---- PENJUALAN BUKU TULIS ----");
+
+  int stokBuku = 3;
+
+  // Jika kondisi while  salah, program dapat terus melakukan penjualan
+  // hingga stok menjadi negatif atau terjadi perulangan tanpa henti
+  // dengan menggunakan kondisi while (stokBuku > 0), penjualan hanya dilakukan
+  // selama stok masih tersedia dan akan berhenti tepat saat stok habis
+
+  while (stokBuku > 0) {
+    stokBuku--;
+    print("Terjual 1, sisa stok: $stokBuku");
+  }
+
+  print("");
+  print("==== DATA PEMBELI ====");
+  print("Nama Pembeli : ${pembeli.nama}");
+  print("Status      : ${pembeli.statusAnggota ? "Anggota" : "Umum"}");
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -176,309 +474,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
-@override
-void initState() {
-  super.initState();
-
-  // Deklarasi variabel
-  String namaBarang = "Buku Tulis";
-  int hargaAnggota = 5000;
-  int hargaUmum = 7000;
-  int jumlahStok = 90;
-  int jumlahBeli = 170;
-  bool anggota = true;
-  String kategori = "atk";
-
-  Barang bukuTulis = Barang("Buku Tulis", 5000, 90);
-
- void prosesBeli(String inputJumlah) {
-  try {
-    int jumlah = int.parse(inputJumlah);
-
-    if (bukuTulis.jual(jumlah)) {
-      print("Penjualan $jumlah Buku Tulis berhasil.");
-      print("Sisa stok : ${bukuTulis.stok}");
-    } else {
-      print("Penjualan gagal karena stok tidak mencukupi");
-    }
-  } catch (e) {
-    print("input jumlah tidak valid. Silahkan masukkan angka");
-  } finally {
-    print("Transaksi dicatat di log");
-  }
-}
-
-prosesBeli("2");
-prosesBeli("dua");
-
-// Penanganan galat meningkatkan kepercayaan pengurus karena sistem
-// tetap berjalan ketika terjadi kesalahan input. Pengurus mendapatkan pesan
-// yang jelas sehingga dapat memperbaiki input tanpa membuat program berhenti 
-// atau mengalami crash.
-
-  Barang pulpen = Barang("Pulpen", 2500, 50);
-  Barang roti = Barang("Roti", 4000, 20);
-
-  Pembeli pembeli = Pembeli("Andi", true);
-
-  BarangPromo bukuPromo = BarangPromo(
-    "Buku Tulis Promo",
-    5000,
-    10,
-    20,
-  );
-
-  bukuPromo.tampilkan();
-
-  BarangGrosir pulpenGrosir = BarangGrosir(
-    "Pulpen Grosir",
-    2500,
-    50,
-    10,
-    10,
-  );
-
-  List<Barang> daftarBarangObjek = [
-    bukuTulis,
-    pulpen,
-    roti,
-  ];
-  
-  for (Barang barang in daftarBarangObjek) {
-  barang.tampilkan();
-  }
-
-//  Dibandingkan cara sprint 3 yang menggunakan beberapa List terpisah
-//  untuk  nama, harga, stok,  penggunaan objek Barang membuat
-//  data setiap  barang menjadi satu kesatuan.
-//  Dengan List<Barang> dan perulangan, penambahan barang menjadi
-//  lebih mudah  karena cukup membuat objek Barang baru tanpa
-//  harus menambah data pada beberapa List yang berbeda.
-
-// Memodelkan barang sebagai objek membuatt data nama, harga, dan stok
-// menjadi satu kesatuan sehingga kode lebih rapi. 
-// Sistem koperasi lebih mudah dikembangkan karena atribut atau Method
-// baru dapat ditambahkan ke class Barang tanpa mengubah banyak kode
-
-  bool tersedia = jumlahStok > 0;
-  String rak;
-
-  switch (kategori) {
-    case "atk":
-      rak = "Rak 1";
-      break;
-    case "makanan":
-      rak = "Rak 2";
-      break;
-    case "minuman":
-      rak = "Rak 3";
-      break;
-    default:
-      rak = "Rak lain";
-  }
-
-  // Switch-case lebih rapi digunakan ketika ada banyak pilihan nilai yang tetap,
-  // misal seperti kategori barang. Kode menjadi lebih mudah dibaca dan dikelola
-  // dibandingkan menggunakan banyak if-else secara berurutan.
-
-  double harga = hitungHarga(
-    anggota,
-    hargaAnggota.toDouble(),
-    hargaUmum.toDouble(),
-  );
-
-  // Menghitung total
-  double total = hitungTotal(jumlahBeli, harga);
-
-  // Menghitung potongan
-  double persenPotongan = 0;
-  double hargaAkhir = 0;
-
-  if (total < 0) {
-    print("Error: Total belanja tidak boleh bernilai negatif!");
-    return;
-  }
-
-  if (anggota && total > 500000) {
-    persenPotongan = 15;
-  } else if (total > 200000) {
-    persenPotongan = 10;
-  } else if (total > 100000) {
-    persenPotongan = 5;
-  }
- 
-  double potongan = total * persenPotongan / 100;
-
-  hargaAkhir = bayarAkhir(
-    jumlahBeli,
-    harga,
-    persenPotongan,
-  );
-
-  hargaAkhir = hitungHargaAkhir(total, persenPotongan);
-  
-  final rupiah = NumberFormat.currency(
-  locale: 'id_ID',
-  symbol: 'Rp',
-  decimalDigits: 0,
-);
-
-print("");
-print("==== NILAI STOK BARANG ====");
-
-for (Barang barang in daftarBarangObjek) {
-  print(
-    "${barang.nama} : ${rupiah.format(barang.nilaiStok())}"
-  );
-}
-
-  // Menampilkan hasil
-  print("===== KARTU DATA BARANG =====");
-  print("Nama Barang   : $namaBarang");
-  print("Harga Anggota : ${rupiah.format(hargaAnggota)}");
-  print("Harga Umum    : ${rupiah.format(hargaUmum)}");
-  print("Jumlah Stok   : $jumlahStok");
-  print("Kategori      : $kategori");
-  print("Letak Rak     : $rak");
-
-  if (tersedia) {
-    print("Status Barang : Tersedia");
-  } else {
-    print("Status Barang : Tidak Tersedia");
-  }
-
-  print("Status Pembeli : ${anggota ? "Anggota" : "Umum"}");
-  print("Harga Satuan   : ${rupiah.format(harga)}");
-  print("Jumlah Beli    : $jumlahBeli");
-  print("Total Harga    : ${rupiah.format(total)}");
-  print("Potongan       : ${rupiah.format(potongan)} ($persenPotongan%)");
-  print("Harga Akhir    : ${rupiah.format(hargaAkhir)}");
-  print("=============================");
-
-
-// ==============================
-// DAFTAR BARANG
-// ==============================
-
-List<String> daftarBarang = [
-  "Buku Tulis",
-  "Pulpen",
-  "Penghapus",
-  "Roti",
-];
-
-List<int> daftarHarga = [
-  3000,
-  2500,
-  1500,
-  5000,
-];
-
-List<int> daftarStok = [
-  3,
-  50,
-  2,
-  20,
-];
-
-double totalNilaiStok = 0;
-
-for (Barang barang in daftarBarangObjek) {
-  totalNilaiStok += barang.nilaiStok();
-}
-
-print("");
-print("==== TOTAL NILAI STOK ====");
-print("Total Nilai Stok : ${rupiah.format(totalNilaiStok)}");
-
-print("");
-print("==== BARANG DENGAN STOK MENIPIS ====");
-
-for (int i = 0; i < daftarBarang.length; i++) {
-  if (daftarStok[i] < 5) {
-    print("${daftarBarang[i]} - Stok: ${daftarStok[i]}");
-  }
-}
-
-print("");
-print("==== BARANG PROMO ====");
-print("Nama Barang : ${bukuPromo.nama}");
-print("Harga Coret: Rp${bukuPromo.harga}");
-print("Diskon      : ${bukuPromo.diskon}%");
-print("Harga Promo : Rp${bukuPromo.hargaPromo()}");
-
-print("");
-print("==== BARANG GROSIR ====");
-print("Nama Barang  : ${pulpenGrosir.nama}");
-print("Harga Normal : Rp${pulpenGrosir.harga}");
-print("Minimal Beli : ${pulpenGrosir.minimalBeli}");
-print("Diskon Grosir : ${pulpenGrosir.diskonGrosir}%");
-print("Harga Grosir : Rp${pulpenGrosir.hargaGrosir()}");
-
-
-print("");
-print("===== DAFTAR BARANG =====");
-
-for (int i = 0; i < daftarBarang.length; i++) {
-  print("${i + 1}. ${daftarBarang[i]} - ${rupiah.format(daftarHarga[i])}");
-}
-
-int diminta = 50;
-print("");
-print("==== CEK KECUKUPAN STOK ====");
-
-if (bukuTulis.bisaDijual(diminta)) {
-  print("Buku Tulis bisa dijual sebanyak $diminta");
-} else {
-  print("Stok Buku Tulis tidak mencukupi untuk penjualan sebanyak $diminta");
-}
-
-print("");
-print("==== UJI ENKAPSULASI STOK ====");
-print("Stok awal Buku Tulis : ${bukuTulis.stok}");
-
-if (bukuTulis.jual(20)) {
-  print("Penjualan 20 berhasil");
-} else {
-  print("Penjualan 20 gagal");
-}
-
-
-print("Stok setelah penjualan : ${bukuTulis.stok}");
-
-if (bukuTulis.jual(100)) {
-  print("Penjualan 100 berhasil");
-} else {
-  print("Penjualan 100 gagal karena stok tidak mencukupi");
-}
-
-print("Stok akhir : ${bukuTulis.stok}");
-
-print("");
-print("---- PENJUALAN BUKU TULIS ----");
-
-int stokBuku = 3;
-
-// Jika kondisi while  salah, program dapat terus melakukan penjualan
-// hingga stok menjadi negatif atau terjadi perulangan tanpa henti
-// dengan menggunakan kondisi while (stokBuku > 0), penjualan hanya dilakukan
-// selama stok masih tersedia dan akan berhenti tepat saat stok habis
-
-while (stokBuku > 0) {
-  stokBuku--;
-  print("Terjual 1, sisa stok: $stokBuku");
-}
-
-print("");
-print("==== DATA PEMBELI ====");
-print("Nama Pembeli : ${pembeli.nama}");
-print(
-  "Status      : ${pembeli.statusAnggota  ? "Anggota" : "Umum"}"
-);
-}
-
-
 
   void _incrementCounter() {
     setState(() {
@@ -545,15 +540,14 @@ print(
   }
 }
 
-
 //Pemilihan tipe data yang tepat penting agar data pada kasir koperasi akurat dan mudah diolah.
 //Misalnya harga dan stok menggunakan int, nama barang menggunakan string dan status tersedia menggunakan bool.
 //Dengan tipe data yang sesuai, kesalahan perhitungan dan penyimpanan data dapat diminimalkan.
 
 // Memecah program menjadi fungsi membuat kode lebih mudah dipelihara dan digunakan kembali
 // Jika aturan potongan koperasi berubah, cukup mengubah perhitungan pada fungsi
-// hitungHargaAkhir() tanpa perlu mengubah kode dibagian transaksi lainnya. 
-// Dengan demikian, perubahan cukup  dilakukan satu kali sehingga lebih efisien 
+// hitungHargaAkhir() tanpa perlu mengubah kode dibagian transaksi lainnya.
+// Dengan demikian, perubahan cukup  dilakukan satu kali sehingga lebih efisien
 // dan mengurangi risiko kesalahan.
 
 // Memindahkan logika pemilihan harga ke fungsi hitungHargga()
@@ -568,6 +562,6 @@ print(
 // cukup dilakukan pada fungsi terkait tanpa mengubah banyak bagian program
 
 // karena _stok harus terlindungi agar tidak dapat diubah sembarangan.
-// Perubahan stok hanya boleh dilakukan melalui method jual() yang 
+// Perubahan stok hanya boleh dilakukan melalui method jual() yang
 // mengecek ketersediaan stok terlebih dahulu, sehingga data stok tetap
 // akurat, konsisten, dan sesuai dengan transaksi yang terjadi.
