@@ -2,14 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-Future<void> muatLaporan() async {
+Future<void> muatLaporan({bool gagal = false}) async {
   print("Menyiapkan laporan...");
   await Future.delayed(Duration(seconds: 1));
+
+  if (gagal) {
+    throw Exception("gagal memuat laporan, koneksi bermasalah");
+  }
   print("Laporan siap!");
 }
 
+// Dokumentasi tp 12.2
+// Program koperasi sekolah menerapkan beberapa konsep TP 12.2 secara bersama-sama.
+// Tipe data dan variabel digunakan untuk menyimpan data barang dan pembeli.
+// Percabangan if digunakan untuk mengecek kondisi jumlah pembelian, stok, dan status anggota.
+// Fungsi/method digunakan untuk menjalankan proses pembelian dan menambah poin pembeli.
+// OOP digunakan melalui class dan object untuk mengatur data serta perilaku barang dan pembeli.
+// Enkapsulasi dan getter digunakan untuk melindungi data poin agar tidak diakses secara langsung.
+// Kelima konsep tersebut bekerja sama sehingga proses transaksi koperasi dapat berjalan terstruktur
+
 Future<void> main() async {
-  await muatLaporan();
+  try {
+  await muatLaporan(gagal: true);
+  } catch (e) {
+    print("Peringatan: $e");
+    print("Program tetap lanjut dengan data default/kosong");
+  }
 
   jalankanSistem();
 
@@ -124,9 +142,29 @@ class BarangGrosir extends Barang {
 class Pembeli {
   String nama;
   bool statusAnggota;
+  int _poin = 0;
 
   Pembeli(this.nama, this.statusAnggota);
+
+  int get poin => _poin;
+
+  void tambahPoin(int jumlah) {
+    if (statusAnggota) {
+      _poin += jumlah;
+    }
+  }
 }
+
+// FITUR POIN ANGGOTA
+// konsep yang digunakan:
+// 1. oop melalui class dan object pembeli
+// 2. enkapsulasi melalui _poin
+// 3. Getter untuk membaca nilai poin
+// 4. Method tambahPoin() untuk mengubah poin
+// 5. Boolean statusAnggota dan if untuuk memastikan hanya
+// anggota yang mendapatkan poin
+// 6. Integrasi dengan transaksi karena poin ditambahkan setelah
+// transaksi berhasil
 
 void jalankanSistem() {
 
@@ -304,24 +342,33 @@ void jalankanSistem() {
   // ---------------- PROSES TRANSAKSI ----------------
 
   void prosesBeli(String inputJumlah) {
-    try {
-      int jumlah = int.parse(inputJumlah);
+  try {
+    int jumlah = int.parse(inputJumlah);
 
-      if (bukuTulis.jual(jumlah)) {
-        print("Penjualan $jumlah Buku Tulis berhasil.");
-        print("Sisa stok : ${bukuTulis.stok}");
-      } else {
-        print("Penjualan gagal karena stok tidak mencukupi");
-      }
-    } catch (e) {
-      print("\"$inputJumlah\" bukan angka, ulangi.");
-    } finally {
-      print("Transaksi dicatat di log");
+    if (jumlah <= 0) {
+      print("Jumlah pembelian harus lebih dari 0.");
+      return;
     }
+
+    if (bukuTulis.jual(jumlah)) {
+      print("Penjualan $jumlah Buku Tulis berhasil.");
+      print("Sisa stok : ${bukuTulis.stok}");
+
+      pembeli.tambahPoin(1);
+
+      print("Poin Pembeli : ${pembeli.poin}");
+    } else {
+      print("Penjualan gagal karena stok tidak mencukupi");
+    }
+  } catch (e) {
+    print("\"$inputJumlah\" bukan angka, ulangi.");
+  } finally {
+    print("Transaksi dicatat di log");
   }
+}
 
   prosesBeli("2");
-  prosesBeli("dua");
+  prosesBeli("3");
 
   // Penanganan galat meningkatkan kepercayaan pengurus karena sistem
   // tetap berjalan ketika terjadi kesalahan input. Pengurus mendapatkan pesan
@@ -420,7 +467,8 @@ void jalankanSistem() {
   print("");
   print("==== DATA PEMBELI ====");
   print("Nama Pembeli : ${pembeli.nama}");
-  print("Status      : ${pembeli.statusAnggota ? "Anggota" : "Umum"}");
+  print("Status       : ${pembeli.statusAnggota ? "Anggota" : "Umum"}");
+  print("Poin         : ${pembeli.poin}");
 }
 
 class MyApp extends StatelessWidget {
